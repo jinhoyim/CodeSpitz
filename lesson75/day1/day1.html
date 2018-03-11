@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>CodePitz75-1</title>
+</head>
+
+<body>
+  <section id="data"></section>
+  <script>
+    const Info = class {
+      constructor(json) {
+        const { title, header, items } = json;
+        if (typeof title != 'string' || !title) throw 'invalid title';
+        if (!Array.isArray(header) || !header.length) throw 'invalid header';
+        if (!Array.isArray(items) || !items.length) throw 'invalid items';
+        this._private = { title, header, items };
+      }
+
+      get title() { return this._private.title; }
+      get header() { return this._private.header; }
+      get items() { return this._private.items; }
+    }
+
+    const Data = class {
+      async getData() {
+        const json = await this._getData();
+        return new Info(json);
+      }
+
+      async _getData() {
+        throw '_getData must overrided';
+      }
+    };
+
+    const JsonData = class extends Data {
+      constructor(data) {
+        super();
+        this._data = data;
+      }
+
+      async getData() {
+        if (typeof this._data == 'string') {
+          const response = await fetch(this._data);
+          return await response.json();
+        } else {
+          return this._data;
+        }
+      }
+    }
+
+    const Renderer = class {
+      constructor() { }
+
+      async render(data) {
+        if (!(data instanceof Data)) throw 'invalid data type';
+        const info = await data.getData();
+        this._title = info.title;
+        this._header = info.header;
+        this._items = info.items;
+        this._render();
+      }
+
+      _render() {
+        throw '_render must overrided';
+      }
+    }
+
+    const TableRenderer = class extends Renderer {
+      constructor(parent) {
+        if (typeof parent != 'string' || !parent) throw 'invalid param';
+        super();
+        this._parent = parent;
+      }
+      _render() {
+        const parent = document.querySelector(this._parent);
+        if (!parent) throw 'invalid parent';
+        parent.innerHTML = '';
+
+        const [table, caption] = 'table,caption'.split(',').map(v => document.createElement(v));
+        caption.innerHTML = this._title;
+        table.appendChild(caption);
+
+        table.appendChild(
+          this._header.reduce(
+            (thead, data) => (thead.appendChild(document.createElement('th')).innerHTML = data, thead),
+            document.createElement('thead'))
+        );
+
+        parent.appendChild(
+          this._items.reduce(
+            (table, row) => (table.appendChild(
+              row.reduce(
+                (tr, data) => (tr.appendChild(document.createElement('td')).innerHTML = data, tr),
+                document.createElement('tr'))
+            ), table),
+            table)
+        );
+      }
+    }
+
+    const data = new JsonData('https://jinhoyim.github.io/CodeSpitz/lesson75/day1/tiobe.json');
+
+    const renderer = new TableRenderer('#data');
+    renderer.render(data);
+
+  </script>
+</body>
+
+</html>
