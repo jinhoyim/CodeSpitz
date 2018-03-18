@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+
+<body>
+  <img id="a" />
+  <div id="b"></div>
+  <script src="Github.js"></script>
+  <script src="ImageLoader.js"></script>
+  <script src="MdLoader.js"></script>
+  <script>
+    const s75img = new ImageLoader(
+      'hikaMaeng',
+      'codespitz75',
+      document.querySelector('#a')
+    );
+    s75img.load('einBig.png');
+
+    const s75md = new MdLoader('hikaMaeng', 'codespitz75', document.querySelector('#b'));
+    s75md.load('README.md');
+  </script>
+</body>
+
+</html>

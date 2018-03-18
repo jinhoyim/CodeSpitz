@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+
+<body>
+  <img src="" alt="" id="a">
+  <div id="b"></div>
+  <script src="Github.js"></script>
+  <script src="Parser.js"></script>
+  <script src="ImageLoader.js"></script>
+  <script src="MdLoader.js"></script>
+  <script>
+    const loader = new Github('hikaMaeng', 'codespitz75');
+
+    const img = new ImageLoader('#a');
+    loader.setParser(img);
+    loader.load('einBig.png');
+
+    const md = new MdLoader('#b');
+    loader.setParser(md);
+    loader.load('README.md');
+  </script>
+</body>
+
+</html>
